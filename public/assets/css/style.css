@@ -1,0 +1,128 @@
+/* =========================================================
+   The Cure Medicall Hall — Design System (global)
+   Tokens, base, typography, buttons, layout utilities
+   ========================================================= */
+:root {
+  --primary: #0D6B4B;
+  --primary-dark: #084B37;
+  --primary-soft: #DFF1E7;
+  --bg: #F7FAF7;
+  --white: #FFFFFF;
+  --text: #172B24;
+  --muted: #718078;
+  --line: #E2ECE6;
+  --warn: #B7791F;
+  --warn-soft: #FFF6E0;
+  --danger: #B3261E;
+  --radius-sm: 10px;
+  --radius: 18px;
+  --radius-lg: 28px;
+  --shadow-sm: 0 1px 2px rgba(8, 75, 55, .06), 0 2px 8px rgba(8, 75, 55, .05);
+  --shadow: 0 8px 30px rgba(8, 75, 55, .08);
+  --shadow-lg: 0 18px 50px rgba(8, 75, 55, .14);
+  --font-head: 'Manrope', system-ui, sans-serif;
+  --font-body: 'DM Sans', system-ui, sans-serif;
+  --nav-h: 76px;
+  --ease: cubic-bezier(.2, .7, .2, 1);
+}
+
+*, *::before, *::after { box-sizing: border-box; }
+html { scroll-behavior: smooth; -webkit-text-size-adjust: 100%; }
+body {
+  margin: 0;
+  font-family: var(--font-body);
+  color: var(--text);
+  background: var(--bg);
+  line-height: 1.65;
+  font-size: 1rem;
+  overflow-x: hidden;
+}
+img, svg { max-width: 100%; }
+a { color: var(--primary); text-decoration: none; transition: color .2s var(--ease); }
+a:hover { color: var(--primary-dark); }
+:focus-visible { outline: 3px solid rgba(13, 107, 75, .45); outline-offset: 2px; border-radius: 6px; }
+
+h1, h2, h3, h4, h5, h6, .font-head { font-family: var(--font-head); color: var(--text); letter-spacing: -.02em; line-height: 1.15; font-weight: 800; }
+h1 { font-size: clamp(2.25rem, 5vw, 3.75rem); }
+h2 { font-size: clamp(1.75rem, 3.2vw, 2.5rem); }
+h3 { font-size: clamp(1.2rem, 2vw, 1.5rem); }
+p { margin: 0 0 1rem; }
+.text-muted-c { color: var(--muted) !important; }
+.text-primary-c { color: var(--primary) !important; }
+.bg-soft { background: var(--primary-soft); }
+.bg-white-c { background: var(--white); }
+.bg-dark-c { background: var(--primary-dark); color: #fff; }
+.bg-dark-c h1, .bg-dark-c h2, .bg-dark-c h3, .bg-dark-c h4 { color: #fff; }
+
+.section { padding: clamp(3.5rem, 7vw, 6rem) 0; }
+.section-sm { padding: clamp(2rem, 4vw, 3.5rem) 0; }
+.eyebrow {
+  display: inline-flex; align-items: center; gap: .5rem;
+  font-family: var(--font-head); font-weight: 700; font-size: .78rem;
+  letter-spacing: .12em; text-transform: uppercase; color: var(--primary);
+  margin-bottom: .9rem;
+}
+.eyebrow::before { content: ""; width: 22px; height: 2px; background: var(--primary); border-radius: 2px; }
+.section-head { max-width: 640px; margin-bottom: 2.5rem; }
+.section-head.center { margin-inline: auto; text-align: center; }
+.section-head.center .eyebrow { justify-content: center; }
+.section-head p { color: var(--muted); font-size: 1.05rem; }
+
+/* Buttons */
+.btn-cure, .btn-cure-outline, .btn-cure-light {
+  display: inline-flex; align-items: center; justify-content: center; gap: .55rem;
+  font-family: var(--font-head); font-weight: 700; font-size: .95rem;
+  padding: .8rem 1.5rem; border-radius: 999px; border: 2px solid transparent;
+  cursor: pointer; transition: all .25s var(--ease); line-height: 1.2; min-height: 46px;
+}
+.btn-cure { background: var(--primary); color: #fff; box-shadow: 0 6px 18px rgba(13, 107, 75, .28); }
+.btn-cure:hover { background: var(--primary-dark); color: #fff; transform: translateY(-2px); }
+.btn-cure-outline { background: transparent; color: var(--primary); border-color: var(--primary); }
+.btn-cure-outline:hover { background: var(--primary); color: #fff; }
+.btn-cure-light { background: #fff; color: var(--primary-dark); }
+.btn-cure-light:hover { background: var(--primary-soft); color: var(--primary-dark); }
+.btn-cure[disabled], .btn-cure.disabled, .btn-cure-outline[disabled] { opacity: .55; pointer-events: none; box-shadow: none; }
+.btn-sm-c { padding: .5rem 1rem; font-size: .85rem; min-height: 38px; }
+.btn-icon {
+  width: 44px; height: 44px; border-radius: 50%; border: 1px solid var(--line); background: #fff;
+  display: inline-flex; align-items: center; justify-content: center; color: var(--text);
+  cursor: pointer; transition: all .2s var(--ease); position: relative;
+}
+.btn-icon:hover { background: var(--primary-soft); color: var(--primary); border-color: var(--primary-soft); }
+.btn-icon.active { background: var(--primary); color: #fff; border-color: var(--primary); }
+
+/* Badges */
+.badge-c {
+  display: inline-flex; align-items: center; gap: .3rem; font-size: .72rem; font-weight: 700;
+  padding: .3rem .7rem; border-radius: 999px; background: var(--primary-soft); color: var(--primary-dark);
+  font-family: var(--font-head);
+}
+.badge-warn { background: var(--warn-soft); color: var(--warn); }
+.badge-demo { background: #EEF1F0; color: var(--muted); }
+
+/* Page header (inner pages) */
+.page-hero {
+  background: linear-gradient(180deg, var(--primary-soft), var(--bg));
+  padding: calc(2.5rem + 0px) 0 2.5rem; border-bottom: 1px solid var(--line);
+}
+.breadcrumb-c { display: flex; flex-wrap: wrap; gap: .4rem; font-size: .88rem; color: var(--muted); margin-bottom: .75rem; padding: 0; list-style: none; }
+.breadcrumb-c li + li::before { content: "/"; margin-right: .4rem; color: var(--muted); }
+
+.notice {
+  display: flex; gap: .85rem; padding: 1rem 1.15rem; border-radius: var(--radius);
+  background: var(--warn-soft); color: #6b4a10; font-size: .92rem; border: 1px solid #f1deae;
+}
+.notice i { font-size: 1.15rem; flex: none; margin-top: .1rem; }
+.notice.info { background: var(--primary-soft); color: var(--primary-dark); border-color: #c5e3d2; }
+
+.skip-link { position: absolute; left: -999px; top: 0; background: var(--primary); color: #fff; padding: .6rem 1rem; z-index: 3000; }
+.skip-link:focus { left: 1rem; top: 1rem; color: #fff; }
+
+/* Reveal animation (subtle) */
+.reveal { opacity: 0; transform: translateY(18px); transition: opacity .6s var(--ease), transform .6s var(--ease); }
+.reveal.in { opacity: 1; transform: none; }
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  .reveal { opacity: 1; transform: none; transition: none; }
+  * { animation-duration: .01ms !important; transition-duration: .01ms !important; }
+}

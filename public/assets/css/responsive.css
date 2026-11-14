@@ -1,0 +1,57 @@
+/* =========================================================
+   Responsive refinements
+   ========================================================= */
+@media (max-width: 1199.98px) {
+  .nav-links a { padding: .5rem .65rem; font-size: .9rem; }
+  .trust-card { grid-template-columns: repeat(2, 1fr); }
+  .trust-item:nth-child(3) { border-left: 0; }
+}
+
+@media (max-width: 991.98px) {
+  :root { --nav-h: 68px; }
+  .nav-links, .nav-actions .hide-md { display: none; }
+  .menu-toggle { display: inline-flex; }
+  .site-nav .container { gap: .6rem; }
+  .nav-actions { margin-left: auto; }
+  .hero-visual { max-width: 420px; margin-top: 2rem; }
+  .filter-card, .summary-card { position: static; }
+  .g-tile.tall { min-height: 220px; }
+  .announce .hide-md { display: none; }
+}
+
+@media (max-width: 767.98px) {
+  body { padding-bottom: 72px; }
+  .bottom-nav { display: flex; }
+  .to-top { bottom: 5.4rem; right: .9rem; }
+  .toast-wrap { bottom: 5.2rem; right: .75rem; left: .75rem; }
+  .toast-c { max-width: none; }
+  .section { padding: 3rem 0; }
+  .announce .container { justify-content: center; text-align: center; }
+  .announce .hide-sm { display: none; }
+  .trust { margin-top: -1.25rem; }
+  .trust-card { grid-template-columns: 1fr; padding: 1rem; gap: .25rem; }
+  .trust-item { padding: .6rem .4rem; border-left: 0 !important; }
+  .trust-item + .trust-item { border-top: 1px solid var(--line); }
+  .hero-cta .btn-cure, .hero-cta .btn-cure-outline { flex: 1 1 100%; }
+  .float-a { left: -2%; }
+  .float-b { right: -2%; }
+  .p-body { padding: .9rem; }
+  .p-name { font-size: .95rem; }
+  .p-foot .btn-sm-c { width: 100%; }
+  .pd-media { font-size: 5.5rem; }
+  .cart-item { flex-wrap: wrap; }
+  .search-overlay { padding-top: 4vh; }
+  .promo::after { font-size: 11rem; }
+  .invoice { padding: 1rem; overflow-x: auto; }
+}
+
+@media (max-width: 420px) {
+  .brand-text span { display: none; }
+  .brand-text strong { font-size: .98rem; }
+  .p-media .p-ic { font-size: 2.6rem; }
+}
+
+@media print {
+  .announce, .site-nav, .site-footer, .bottom-nav, .to-top, .no-print { display: none !important; }
+  body { background: #fff; padding: 0; }
+}

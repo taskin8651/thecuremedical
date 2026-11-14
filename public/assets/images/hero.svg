@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 400" role="img" aria-label="Pharmacy illustration with medicine bottle, capsules and leaf">
+  <defs><linearGradient id="g" x1="0" x2="1"><stop offset="0" stop-color="#DFF1E7"/><stop offset="1" stop-color="#fff"/></linearGradient></defs>
+  <rect x="120" y="150" width="160" height="200" rx="26" fill="url(#g)"/>
+  <rect x="136" y="110" width="128" height="56" rx="14" fill="#fff"/>
+  <rect x="146" y="120" width="108" height="14" rx="7" fill="#0D6B4B" opacity=".25"/>
+  <rect x="140" y="200" width="120" height="110" rx="14" fill="#fff" opacity=".9"/>
+  <path d="M190 222h20v20h20v20h-20v20h-20v-20h-20v-20h20z" fill="#0D6B4B"/>
+  <rect x="60" y="270" width="90" height="36" rx="18" transform="rotate(-24 105 288)" fill="#fff"/>
+  <rect x="60" y="270" width="45" height="36" rx="18" transform="rotate(-24 105 288)" fill="#8dd1b1"/>
+  <rect x="270" y="290" width="80" height="32" rx="16" transform="rotate(20 310 306)" fill="#fff"/>
+  <rect x="270" y="290" width="40" height="32" rx="16" transform="rotate(20 310 306)" fill="#0D6B4B" opacity=".6"/>
+  <path d="M300 130c-40 0-70 28-70 66 38 0 70-28 70-66z" fill="#8dd1b1"/>
+  <path d="M300 130c-20 16-40 36-56 62" stroke="#0D6B4B" stroke-width="3" fill="none" stroke-linecap="round"/>
+</svg>
