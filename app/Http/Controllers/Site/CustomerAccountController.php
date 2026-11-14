@@ -117,17 +117,19 @@ class CustomerAccountController extends Controller
     public function resendVerification(Request $request)
     {
         $customer = $request->user('customer');
-        if (! $customer->hasVerifiedEmail()) {
-            try {
-                $customer->sendEmailVerificationNotification();
-            } catch (Throwable $e) {
-                report($e);
-
-                return back()->with('mail_error', 'We could not send email right now. Please try again after mail settings are configured.');
-            }
+        if ($customer->hasVerifiedEmail()) {
+            return back()->with('status', 'Your email address is already verified. No new link was sent.');
         }
 
-        return back()->with('status', 'If your account needs verification, a new link has been sent.');
+        try {
+            $customer->sendEmailVerificationNotification();
+        } catch (Throwable $e) {
+            report($e);
+
+            return back()->with('mail_error', 'We could not submit the verification email. Please try again after mail settings are corrected.');
+        }
+
+        return back()->with('status', 'A verification email was submitted. Please check your inbox and spam folder.');
     }
 
     public function verify(Request $request, Customer $customer, string $hash)
