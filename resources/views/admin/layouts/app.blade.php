@@ -12,7 +12,6 @@
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" onerror="this.onerror=null;this.href='https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.3/css/bootstrap.min.css'">
   <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet" onerror="this.onerror=null;this.href='https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.11.3/font/bootstrap-icons.min.css'">
   <link href="{{ asset('admin/css/admin.css') }}?v={{ filemtime(public_path('admin/css/admin.css')) }}" rel="stylesheet">
-  <link href="{{ asset('admin/css/crud-fields.css') }}?v={{ filemtime(public_path('admin/css/crud-fields.css')) }}" rel="stylesheet">
   @stack('head')
 </head>
 <body>
@@ -29,7 +28,6 @@
 </div>
 <script async src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" onerror="this.onerror=null;this.src='https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.3/js/bootstrap.bundle.min.js'"></script>
 <script defer src="{{ asset('admin/js/admin.js') }}?v={{ filemtime(public_path('admin/js/admin.js')) }}"></script>
-<script defer src="{{ asset('admin/js/crud-fields.js') }}?v={{ filemtime(public_path('admin/js/crud-fields.js')) }}"></script>
 @stack('scripts')
 </body>
 </html>
