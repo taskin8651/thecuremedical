@@ -91,7 +91,7 @@ abstract class CrudController extends Controller
 
     protected function formView(): string
     {
-        return 'admin.crud.form';
+        return 'admin.crud.'.(request()->routeIs($this->route.'.edit') ? 'edit' : 'create');
     }
 
     // ------------------------------------------------------------------ helpers used by CrudRequest

@@ -5,7 +5,7 @@
   $cartUnavailable = public_cart_unavailable_reason($product);
   [$availLabel, $availClass] = public_availability($product);
   $imgs = $product->getMedia('images');
-  $first = $imgs->first();
+  $first = $product->primaryImage();
   $facts = [
     'Generic name' => $product->generic_name, 'Composition' => $product->composition, 'Strength' => $product->strength, 'Form' => $product->dosage_form,
     'Pack size' => $product->pack_size, 'Pack type' => $product->pack_type, 'Manufacturer' => $product->manufacturer, 'Shelf life' => $product->shelf_life,
@@ -19,7 +19,25 @@
 <section class="section-sm"><div class="container"><div class="row g-5">
   <div class="col-lg-5">
     <div class="pd-media">@if ($first)<img id="mainImg" src="{{ $first->getUrl() }}" alt="{{ $product->name }}" style="width:100%;height:100%;object-fit:contain">@else<i class="bi bi-capsule" style="font-size:6rem;color:var(--primary)"></i>@endif</div>
-    @if ($imgs->count() > 1)<div class="d-flex gap-2 mt-2 flex-wrap">@foreach ($imgs as $m)<a href="{{ $m->getUrl() }}" target="_blank" rel="noopener"><img src="{{ $m->hasGeneratedConversion('thumb') ? $m->getUrl('thumb') : $m->getUrl() }}" alt="" width="72" height="72" style="object-fit:cover;border-radius:12px;border:1px solid var(--line)" loading="lazy"></a>@endforeach</div>@endif
+    @if ($imgs->count() > 1)
+      <div class="pd-gallery" role="group" aria-label="Product photos">
+        @foreach ($imgs as $m)
+          <button class="pd-gallery-thumb" type="button" data-image-url="{{ $m->getUrl() }}" aria-label="Show photo {{ $loop->iteration }} of {{ $imgs->count() }}" aria-pressed="{{ $m->id === $first?->id ? 'true' : 'false' }}">
+            <img src="{{ $m->hasGeneratedConversion('thumb') ? $m->getUrl('thumb') : $m->getUrl() }}" alt="" width="72" height="72" loading="lazy">
+          </button>
+        @endforeach
+      </div>
+      <style>.pd-gallery{display:flex;gap:10px;flex-wrap:wrap;margin-top:12px}.pd-gallery-thumb{width:76px;height:76px;padding:3px;border:1px solid var(--line);border-radius:12px;background:#fff;cursor:pointer;transition:border-color .15s,box-shadow .15s}.pd-gallery-thumb[aria-pressed="true"],.pd-gallery-thumb:hover{border-color:var(--primary);box-shadow:0 0 0 2px color-mix(in srgb,var(--primary) 16%,transparent)}.pd-gallery-thumb img{width:100%;height:100%;object-fit:cover;border-radius:8px}</style>
+      <script>
+        document.querySelectorAll('.pd-gallery-thumb').forEach(function (thumb) {
+          thumb.addEventListener('click', function () {
+            var main = document.getElementById('mainImg');
+            if (main) main.src = thumb.dataset.imageUrl;
+            document.querySelectorAll('.pd-gallery-thumb').forEach(function (item) { item.setAttribute('aria-pressed', item === thumb ? 'true' : 'false'); });
+          });
+        });
+      </script>
+    @endif
   </div>
   <div class="col-lg-7">
     @if ($product->category)<a class="badge-c" href="{{ route('site.products', ['category' => $product->category->slug]) }}">{{ $product->category->name }}</a>@endif

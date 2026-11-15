@@ -1,5 +1,3 @@
-@extends('admin.layouts.app')
-@section('title', $role->exists ? 'Edit role' : 'Add role')
 @section('content')
 <div class="page-head">
   <div><h1>{{ $role->exists ? 'Edit '.$role->name : 'Add role' }}</h1><p class="sub">You can only grant permissions that you have yourself.</p></div>
@@ -29,4 +27,3 @@
   </div></div>
   <div class="d-flex gap-2 pb-4"><button class="btn-c" type="submit"><i class="bi bi-check2"></i> Save role</button><a class="btn-c-outline" href="{{ route('admin.roles.index') }}">Cancel</a></div>
 </form>
-@endsection

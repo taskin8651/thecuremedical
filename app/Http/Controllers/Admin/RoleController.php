@@ -37,7 +37,7 @@ class RoleController extends Controller
     {
         $this->authorize('create', Role::class);
 
-        return view('admin.roles.form', $this->formData(new Role));
+        return view('admin.roles.create', $this->formData(new Role));
     }
 
     public function store(Request $request)
@@ -57,7 +57,7 @@ class RoleController extends Controller
         $this->authorize('update', $role);
         abort_if(in_array($role->name, self::LOCKED, true), 403, 'The Super Admin role cannot be edited.');
 
-        return view('admin.roles.form', $this->formData($role));
+        return view('admin.roles.edit', $this->formData($role));
     }
 
     public function update(Request $request, Role $role)

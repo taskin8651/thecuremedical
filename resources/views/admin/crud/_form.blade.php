@@ -1,5 +1,3 @@
-@extends('admin.layouts.app')
-@section('title', ($model->exists ? 'Edit ' : 'Add ').strtolower($singular))
 @section('content')
 @php
   $editing = $model->exists;
@@ -38,4 +36,3 @@
     <a class="btn-c-outline" href="{{ route($route.'.index') }}">Cancel</a>
   </div>
 </form>
-@endsection

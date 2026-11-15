@@ -147,7 +147,7 @@ class ProductController extends CrudController
         }
 
         $fields = array_merge($fields, [
-            ['name' => 'images', 'label' => 'Product images', 'type' => 'images', 'collection' => 'images', 'primary' => true, 'group' => 'Media', 'col' => 12, 'help' => 'JPG, PNG or WebP, up to 4 MB each. Choose the primary image after uploading.'],
+            ['name' => 'images', 'label' => 'Product images', 'type' => 'images', 'collection' => 'images', 'primary' => true, 'group' => 'Media', 'col' => 12, 'rules' => 'nullable|array|max:4', 'item_rules' => 'image|mimes:jpg,jpeg,png,webp|max:4096', 'help' => 'Upload up to 4 images per product. JPG, PNG or WebP, up to 4 MB each. Choose the primary image after uploading.'],
             ['name' => 'documents', 'label' => 'Documents (leaflet, certificates)', 'type' => 'files', 'collection' => 'documents', 'col' => 12],
             ['name' => 'attributes_text', 'label' => 'Extra attributes', 'type' => 'textarea', 'virtual' => true, 'rows' => 3, 'col' => 12, 'group' => 'Additional', 'rules' => 'nullable|string|max:3000',
                 'help' => 'One per line as "Name: Value".', 'value' => $isEdit ? $model->attributesList->map(fn ($a) => $a->name.': '.$a->value)->implode("\n") : null],
@@ -164,6 +164,21 @@ class ProductController extends CrudController
 
     protected function beforeSave(array &$data, Model $model, Request $request): void
     {
+        $existingImages = $model->exists ? $model->getMedia('images')->pluck('id') : collect();
+        $removedImages = collect($request->input('remove_media.images', []))
+            ->map(fn ($id) => (int) $id)
+            ->intersect($existingImages)
+            ->unique()
+            ->count();
+        $remainingImages = $existingImages->count() - $removedImages;
+        $newImages = count((array) $request->file('images', []));
+
+        if ($remainingImages + $newImages > 4) {
+            throw ValidationException::withMessages([
+                'images' => 'A product can have up to 4 images. Remove an existing image or select fewer files.',
+            ]);
+        }
+
         if (isset($data['mrp'], $data['sale_price']) && $data['mrp'] !== '' && $data['sale_price'] !== '' && (float) $data['sale_price'] > (float) $data['mrp']) {
             throw ValidationException::withMessages(['sale_price' => 'Sale price cannot be higher than MRP.']);
         }

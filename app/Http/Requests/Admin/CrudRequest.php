@@ -11,10 +11,28 @@ use Illuminate\Support\Facades\Gate;
  */
 class CrudRequest extends FormRequest
 {
+    private function recordId(): mixed
+    {
+        $route = $this->route();
+        if ($route->parameter('record') !== null) {
+            return $route->parameter('record');
+        }
+
+        // Laravel resource routes name the parameter after the resource (product,
+        // brand, etc.), while the shared CRUD request historically expected "record".
+        foreach ($route->parameters() as $value) {
+            if ($value !== null) {
+                return $value;
+            }
+        }
+
+        return null;
+    }
+
     public function authorize(): bool
     {
         $controller = $this->route()->getController();
-        $id = $this->route('record');
+        $id = $this->recordId();
 
         if ($id) {
             return Gate::allows('update', $controller->findRecord($id));
@@ -26,7 +44,7 @@ class CrudRequest extends FormRequest
     public function rules(): array
     {
         $controller = $this->route()->getController();
-        $id = $this->route('record');
+        $id = $this->recordId();
 
         return $controller->validationRules($id ? $controller->findRecord($id) : null);
     }
@@ -34,7 +52,7 @@ class CrudRequest extends FormRequest
     public function attributes(): array
     {
         $controller = $this->route()->getController();
-        $id = $this->route('record');
+        $id = $this->recordId();
 
         return $controller->fieldLabels($id ? $controller->findRecord($id) : null);
     }

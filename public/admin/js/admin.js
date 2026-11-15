@@ -72,6 +72,7 @@
     var dropzone = document.querySelector('[data-upload-for="' + input.id + '"]');
     input.addEventListener('change', function () {
       var holder = document.getElementById(input.getAttribute('data-preview'));
+      var status = document.getElementById(input.getAttribute('data-file-status'));
       if (holder) {
         holder.innerHTML = '';
         Array.prototype.forEach.call(input.files, function (f) {
@@ -81,6 +82,11 @@
           img.src = URL.createObjectURL(f);
           holder.appendChild(img);
         });
+      }
+      if (status) {
+        status.textContent = input.files.length
+          ? input.files.length + (input.files.length === 1 ? ' image selected.' : ' images selected.')
+          : 'No images selected.';
       }
       if (dropzone && input.files.length) {
         dropzone.querySelector('strong').textContent = input.files[0].name;
