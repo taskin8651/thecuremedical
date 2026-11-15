@@ -56,11 +56,22 @@
 
     @elseif ($type === 'multiselect')
       @php($selected = collect(old($name, $raw ?? []))->map(fn ($v) => (string) $v)->all())
-      <select id="{{ $id }}" name="{{ $name }}[]" class="form-select @if ($err) is-invalid @endif" multiple size="{{ min(8, max(3, count($f['options'] ?? []))) }}">
-        @foreach ($f['options'] ?? [] as $optValue => $optLabel)
-          <option value="{{ $optValue }}" @selected(in_array((string) $optValue, $selected, true))>{{ $optLabel }}</option>
-        @endforeach
-      </select>
+     <select
+    id="{{ $id }}"
+    name="{{ $name }}[]"
+    class="form-select @if ($err) is-invalid @endif"
+    multiple
+    size="{{ min(8, max(3, count($f['options'] ?? []))) }}"
+>
+    @foreach ($f['options'] ?? [] as $optValue => $optLabel)
+        <option
+            value="{{ $optValue }}"
+            @selected(in_array((string) $optValue, $selected, true))
+        >
+            {{ $optLabel }}
+        </option>
+    @endforeach
+</select>
 
     @elseif ($type === 'color')
       <div class="d-flex gap-2"><input type="color" class="form-control form-control-color" value="{{ $value ?: '#0D6B4B' }}" data-mirror="{{ $id }}" aria-label="Pick colour"><input id="{{ $id }}" name="{{ $name }}" value="{{ $value }}" class="form-control" maxlength="7"></div>
