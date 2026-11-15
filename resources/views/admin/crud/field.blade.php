@@ -55,46 +55,21 @@
       </select>
 
     @elseif ($type === 'multiselect')
-      @php($selected = collect(old($name, $raw ?? []))->map(fn ($v) => (string) $v)->all())
-     <select
-    id="{{ $id }}"
-    name="{{ $name }}[]"
-    class="form-select @if ($err) is-invalid @endif"
-    multiple
-    size="{{ min(8, max(3, count($f['options'] ?? []))) }}"
->
-    @foreach ($f['options'] ?? [] as $optValue => $optLabel)
-        <option
-            value="{{ $optValue }}"
-            @selected(in_array((string) $optValue, $selected, true))
-        >
-            {{ $optLabel }}
-        </option>
-    @endforeach
-</select>
+      @php
+        $selected = collect(old($name, $raw ?? []))
+            ->map(fn ($v) => (string) $v)
+            ->all();
+      @endphp
+      <select id="{{ $id }}" name="{{ $name }}[]" class="form-select @if ($err) is-invalid @endif" multiple size="{{ min(8, max(3, count($f['options'] ?? []))) }}">
+        @foreach ($f['options'] ?? [] as $optValue => $optLabel)
+          <option value="{{ $optValue }}" @selected(in_array((string) $optValue, $selected, true))>{{ $optLabel }}</option>
+        @endforeach
+      </select>
 
     @elseif ($type === 'color')
       <div class="d-flex gap-2"><input type="color" class="form-control form-control-color" value="{{ $value ?: '#0D6B4B' }}" data-mirror="{{ $id }}" aria-label="Pick colour"><input id="{{ $id }}" name="{{ $name }}" value="{{ $value }}" class="form-control" maxlength="7"></div>
 
     @elseif (in_array($type, ['image', 'images', 'files'], true))
-      @php
-        $collection = $f['collection'];
-        $existing = $model->exists ? $model->getMedia($collection) : collect();
-      @endphp
-      @if ($existing->isNotEmpty())
-        <div class="media-grid">
-          @foreach ($existing as $m)
-            <div class="media-tile">
-              @if (str_starts_with($m->mime_type, 'image/'))<img src="{{ $m->hasGeneratedConversion('thumb') ? $m->getUrl('thumb') : $m->getUrl() }}" alt="">@else<div class="doc"><i class="bi bi-file-earmark-text"></i></div>@endif
-              <div class="text-truncate" title="{{ $m->file_name }}">{{ $m->name }}</div>
-              @if (! empty($f['primary']))<label><input type="radio" name="primary_media" value="{{ $m->id }}" @checked($m->getCustomProperty('primary'))> Primary</label>@endif
-              <label class="text-danger"><input type="checkbox" name="remove_media[{{ $collection }}][]" value="{{ $m->id }}"> Remove</label>
-            </div>
-          @endforeach
-        </div>
-      @endif
-     
-@elseif (in_array($type, ['image', 'images', 'files'], true))
 
     @php
         $collection = $f['collection'] ?? '';
@@ -118,7 +93,7 @@
                 <div class="media-tile">
 
                     @if (str_starts_with($m->mime_type, 'image/'))
-                        <img src="{{ $m->getUrl() }}" alt="">
+                        <img src="{{ $m->hasGeneratedConversion('thumb') ? $m->getUrl('thumb') : $m->getUrl() }}" alt="">
                     @else
                         <div class="doc">
                             <i class="bi bi-file-earmark-text"></i>
