@@ -1,0 +1,120 @@
+.upload-file-input {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    opacity: 0;
+    pointer-events: none;
+}
+
+.custom-upload-box {
+    width: 100%;
+    margin-top: 8px;
+}
+
+.upload-dropzone {
+    border: 2px dashed #d2e1d9;
+    background: #f8fbf9;
+    border-radius: 12px;
+    padding: 35px 20px;
+    text-align: center;
+    transition: .2s;
+    cursor: pointer;
+}
+
+.upload-dropzone:hover,
+.upload-dropzone.drag-active {
+    border-color: #0d6b4b;
+    background: #f0f8f4;
+}
+
+.upload-icon {
+    width: 54px;
+    height: 54px;
+    border-radius: 14px;
+    background: #e5f3ec;
+    color: #0d6b4b;
+    font-size: 27px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 14px;
+}
+
+.upload-dropzone h6 {
+    font-weight: 700;
+    color: #193c30;
+    margin-bottom: 7px;
+}
+
+.upload-dropzone p {
+    color: #78877e;
+    font-size: 13px;
+}
+
+.upload-dropzone .btn-c-outline {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 18px;
+    background: #fff;
+    border: 1px solid #0d6b4b;
+    color: #0d6b4b;
+    border-radius: 8px;
+    cursor: pointer;
+}
+
+.upload-dropzone .btn-c-outline:hover {
+    background: #0d6b4b;
+    color: #fff;
+}
+
+.upload-formats {
+    margin-top: 13px;
+    color: #87948d;
+    font-size: 12px;
+}
+
+.upload-preview {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(115px, 1fr));
+    gap: 12px;
+    margin-top: 15px;
+}
+
+.upload-preview:empty {
+    display: none;
+}
+
+.upload-preview-item {
+    border: 1px solid #e1e9e4;
+    padding: 7px;
+    border-radius: 10px;
+    background: #fff;
+    min-width: 0;
+}
+
+.upload-preview-item img {
+    width: 100%;
+    height: 100px;
+    object-fit: cover;
+    border-radius: 7px;
+}
+
+.upload-preview-item .file-icon {
+    height: 100px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #f1f5f2;
+    border-radius: 7px;
+    font-size: 32px;
+    color: #0d6b4b;
+}
+
+.upload-preview-item small {
+    display: block;
+    margin-top: 7px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
