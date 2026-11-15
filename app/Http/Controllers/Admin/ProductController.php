@@ -105,8 +105,8 @@ class ProductController extends CrudController
 
         $fields = [
             ['name' => 'name', 'label' => 'Product name', 'rules' => 'required|string|max:200', 'group' => 'Basic information', 'col' => 8],
-            ['name' => 'sku', 'label' => 'SKU', 'col' => 4, 'rules' => fn ($m) => ['nullable', 'string', 'max:80', Rule::unique('products', 'sku')->ignore($m?->id)]],
-            ['name' => 'slug', 'col' => 4, 'rules' => fn ($m) => ['nullable', 'alpha_dash', 'max:220', Rule::unique('products', 'slug')->ignore($m?->id)], 'help' => 'Blank = generated from the name.'],
+            ['name' => 'sku', 'label' => 'SKU', 'col' => 4, 'rules' => fn ($m) => ['nullable', 'string', 'max:80', Rule::unique('products', 'sku')->ignore($m ? $m->id : null)]],
+            ['name' => 'slug', 'col' => 4, 'rules' => fn ($m) => ['nullable', 'alpha_dash', 'max:220', Rule::unique('products', 'slug')->ignore($m ? $m->id : null)], 'help' => 'Blank = generated from the name.'],
             ['name' => 'barcode', 'col' => 4, 'rules' => 'nullable|string|max:80'],
             ['name' => 'brand_id', 'label' => 'Brand', 'type' => 'select', 'col' => 4, 'options' => $brands, 'rules' => ['nullable', Rule::exists('brands', 'id')]],
             ['name' => 'category_id', 'label' => 'Category', 'type' => 'select', 'col' => 6, 'options' => $top, 'rules' => ['nullable', Rule::exists('categories', 'id')]],

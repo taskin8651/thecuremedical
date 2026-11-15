@@ -50,7 +50,7 @@ class BrandController extends CrudController
     {
         return [
             ['name' => 'name', 'rules' => 'required|string|max:120'],
-            ['name' => 'slug', 'rules' => fn ($m) => ['nullable', 'alpha_dash', 'max:160', Rule::unique('brands', 'slug')->ignore($m?->id)], 'help' => 'Leave blank to generate from the name.'],
+            ['name' => 'slug', 'rules' => fn ($m) => ['nullable', 'alpha_dash', 'max:160', Rule::unique('brands', 'slug')->ignore($m ? $m->id : null)], 'help' => 'Leave blank to generate from the name.'],
             ['name' => 'manufacturer', 'label' => 'Manufacturer name', 'rules' => 'nullable|string|max:150'],
             ['name' => 'logo', 'label' => 'Upload a new logo', 'type' => 'image', 'collection' => 'logo', 'help' => 'Choose an image from your device. This replaces the current logo.'],
             [
