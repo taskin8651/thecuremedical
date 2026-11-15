@@ -66,24 +66,6 @@
       <div class="d-flex gap-2"><input type="color" class="form-control form-control-color" value="{{ $value ?: '#0D6B4B' }}" data-mirror="{{ $id }}" aria-label="Pick colour"><input id="{{ $id }}" name="{{ $name }}" value="{{ $value }}" class="form-control" maxlength="7"></div>
 
     @elseif (in_array($type, ['image', 'images', 'files'], true))
-      @php
-        $collection = $f['collection'];
-        $existing = $model->exists ? $model->getMedia($collection) : collect();
-      @endphp
-      @if ($existing->isNotEmpty())
-        <div class="media-grid">
-          @foreach ($existing as $m)
-            <div class="media-tile">
-              @if (str_starts_with($m->mime_type, 'image/'))<img src="{{ $m->hasGeneratedConversion('thumb') ? $m->getUrl('thumb') : $m->getUrl() }}" alt="">@else<div class="doc"><i class="bi bi-file-earmark-text"></i></div>@endif
-              <div class="text-truncate" title="{{ $m->file_name }}">{{ $m->name }}</div>
-              @if (! empty($f['primary']))<label><input type="radio" name="primary_media" value="{{ $m->id }}" @checked($m->getCustomProperty('primary'))> Primary</label>@endif
-              <label class="text-danger"><input type="checkbox" name="remove_media[{{ $collection }}][]" value="{{ $m->id }}"> Remove</label>
-            </div>
-          @endforeach
-        </div>
-      @endif
-     
-@elseif (in_array($type, ['image', 'images', 'files'], true))
 
     @php
         $collection = $f['collection'] ?? '';
