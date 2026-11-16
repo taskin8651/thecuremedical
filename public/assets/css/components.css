@@ -672,3 +672,18 @@
 .gallery-modal-count { position:absolute; right:1.25rem; bottom:1.2rem; z-index:2; padding:.35rem .65rem; border-radius:999px; background:rgba(15,45,34,.68); color:#fff; font-size:.75rem; font-weight:700; font-variant-numeric:tabular-nums; }
 @media (hover:none) { .gallery-image-open { opacity:1; transform:none; } }
 @media (max-width:575.98px) { .gallery-modal-nav { width:38px;height:38px; } .gallery-modal-prev { left:.55rem; } .gallery-modal-next { right:.55rem; } }
+@media (max-width:575.98px) {
+  .gallery-page { padding-top:1.5rem; }
+  .gallery-page .gallery-filters { display:grid!important; grid-template-columns:repeat(2,minmax(0,1fr)); gap:.5rem!important; }
+  .gallery-page .gallery-filters .badge-c { display:flex; align-items:center; justify-content:center; min-height:42px; padding:.55rem .65rem; text-align:center; line-height:1.2; }
+  .gallery-page .gallery-filters .badge-c:last-child { grid-column:1 / -1; }
+  .gallery-card { gap:.45rem; }
+  .gallery-modal-trigger.g-tile { aspect-ratio:4 / 3; border-radius:15px; }
+  .gallery-card-caption { font-size:.82rem!important; }
+  .gallery-image-type { font-size:.62rem; }
+  .gallery-image-modal .modal-dialog { margin:.5rem; }
+  .gallery-image-modal .modal-header { padding:.85rem .9rem .65rem; }
+  .gallery-image-modal .modal-body { min-height:180px; padding:0 .35rem .75rem; }
+  .gallery-image-modal .modal-body img { max-width:100%; max-height:68vh; }
+  .gallery-modal-count { right:.75rem; bottom:.8rem; }
+}

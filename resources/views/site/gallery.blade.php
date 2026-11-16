@@ -2,7 +2,7 @@
 @section('title', 'Gallery')
 @section('content')
 @include('site.partials.hero', ['crumbs' => ['Gallery' => null], 'heading' => 'Gallery', 'lead' => 'A look inside the store.'])
-<section class="section-sm"><div class="container">
+<section class="section-sm gallery-page"><div class="container">
   <div class="gallery-filters d-flex flex-wrap gap-2 mb-3" aria-label="Filter gallery by type">
     @foreach ($types as $value => $label)<a class="badge-c {{ $currentType === $value ? 'active' : '' }}" href="{{ route('site.gallery', array_filter(['type' => $value, 'category' => $value === '' || $value === 'gallery' ? $current : null])) }}">{{ $label }}</a>@endforeach
   </div>

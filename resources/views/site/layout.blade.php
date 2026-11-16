@@ -104,7 +104,7 @@
 </main>
 
 <footer class="site-footer"><div class="container">
-  <div class="row g-5">
+  <div class="row ">
     <div class="col-lg-4">
       <a class="brand mb-3" href="{{ route('site.home') }}">
         @if ($footLogo)<img class="brand-logo" src="{{ $footLogo }}" alt="{{ $biz }}">@else<span class="brand-mark"><i class="bi bi-plus-lg"></i></span><span class="brand-text"><strong>{{ \Illuminate\Support\Str::before($biz, ' Medicall') }}</strong><span>{{ str_contains($biz, 'Medicall') ? 'Medicall Hall' : setting('tagline') }}</span></span>@endif

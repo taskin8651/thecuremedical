@@ -57,6 +57,13 @@
   .search-overlay { padding-top: 4vh; }
   .promo::after { font-size: 11rem; }
   .invoice { padding: 1rem; overflow-x: auto; }
+  .site-footer { padding-top: 2.5rem; }
+  .site-footer .row { row-gap: 2rem !important; }
+  .site-footer .row > [class*="col-"] { min-width: 0; }
+  .site-footer p, .site-footer li, .site-footer a { overflow-wrap: anywhere; }
+  .site-footer ul { gap: .7rem; }
+  .footer-bottom { flex-direction: column; align-items: flex-start !important; margin-top: 2rem; padding: 1rem 0 0; line-height: 1.55; }
+  .footer-disclaimer { display: block; max-width: 42rem; line-height: 1.55; }
 }
 
 @media (prefers-reduced-motion: reduce) {
