@@ -49,6 +49,47 @@
     startHeroTimer();
   }
 
+  // Open gallery, product, brand and category images in the shared image modal.
+  var galleryModal = $('#galleryImageModal');
+  if (galleryModal) {
+    var galleryTriggers = $$('.gallery-modal-trigger');
+    var galleryIndex = 0;
+    galleryModal.addEventListener('show.bs.modal', function (event) {
+      var trigger = event.relatedTarget;
+      if (!trigger) return;
+      galleryIndex = galleryTriggers.indexOf(trigger);
+      setGalleryImage(galleryIndex);
+    });
+    function setGalleryImage(index) {
+      if (!galleryTriggers.length) return;
+      galleryIndex = (index + galleryTriggers.length) % galleryTriggers.length;
+      var trigger = galleryTriggers[galleryIndex];
+      var image = $('#galleryImageModalPhoto', galleryModal);
+      var title = $('#galleryImageModalTitle', galleryModal);
+      var type = $('#galleryImageModalType', galleryModal);
+      var count = $('#galleryImageModalCount', galleryModal);
+      image.src = trigger.getAttribute('data-gallery-image') || '';
+      image.alt = trigger.getAttribute('data-gallery-title') || '';
+      title.textContent = trigger.getAttribute('data-gallery-title') || '';
+      type.textContent = trigger.getAttribute('data-gallery-type') || '';
+      count.textContent = (galleryIndex + 1) + ' / ' + galleryTriggers.length;
+      $$('.gallery-modal-nav', galleryModal).forEach(function (button) { button.hidden = galleryTriggers.length < 2; });
+    }
+    $$('.gallery-modal-nav', galleryModal).forEach(function (button) {
+      button.addEventListener('click', function () {
+        setGalleryImage(galleryIndex + (button.getAttribute('data-gallery-nav') === 'next' ? 1 : -1));
+      });
+    });
+    galleryModal.addEventListener('keydown', function (event) {
+      if (event.key === 'ArrowRight' && galleryTriggers.length > 1) { event.preventDefault(); setGalleryImage(galleryIndex + 1); }
+      if (event.key === 'ArrowLeft' && galleryTriggers.length > 1) { event.preventDefault(); setGalleryImage(galleryIndex - 1); }
+    });
+    galleryModal.addEventListener('hidden.bs.modal', function () {
+      var image = $('#galleryImageModalPhoto', galleryModal);
+      if (image) image.removeAttribute('src');
+    });
+  }
+
   // Back to top
   var top = $('#toTop');
   if (top) {
