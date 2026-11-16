@@ -9,10 +9,10 @@
   @if ($cats->isNotEmpty() && ($currentType === '' || $currentType === 'gallery'))<div class="d-flex flex-wrap gap-2 mb-4"><a class="badge-c {{ $current === '' ? 'active' : '' }}" href="{{ route('site.gallery', array_filter(['type' => $currentType])) }}">All store photos</a>@foreach ($cats as $c)<a class="badge-c {{ $current === $c ? 'active' : '' }}" href="{{ route('site.gallery', array_filter(['type' => $currentType, 'category' => $c])) }}">{{ $c }}</a>@endforeach</div>@endif
   <div class="row g-3">
     @forelse ($items as $g)
-      <div class="col-6 col-lg-4"><button type="button" class="gallery-modal-trigger g-tile d-block w-100" style="min-height:240px;padding:0;position:relative;border:0;overflow:hidden" data-gallery-image="{{ $g['full'] }}" data-gallery-title="{{ $g['title'] }}" data-gallery-type="{{ ucfirst($g['type']) }}" data-bs-toggle="modal" data-bs-target="#galleryImageModal" aria-label="View {{ $g['title'] }} image">
+      <div class="col-12 col-lg-4"><article class="gallery-card"><button type="button" class="gallery-modal-trigger g-tile d-block w-100" data-gallery-image="{{ $g['full'] }}" data-gallery-title="{{ $g['title'] }}" data-gallery-type="{{ ucfirst($g['type']) }}" data-bs-toggle="modal" data-bs-target="#galleryImageModal" aria-label="View {{ $g['title'] }} image">
         <img src="{{ $g['thumb'] }}" alt="{{ $g['title'] }}" loading="lazy" style="width:100%;height:100%;object-fit:cover;position:absolute;inset:0">
         <span class="gallery-image-open"><i class="bi bi-arrows-fullscreen"></i></span>
-      </button><div class="small text-muted-c mt-2"><span class="gallery-image-type">{{ ucfirst($g['type']) }}</span> · {{ $g['title'] }}</div></div>
+      </button><div class="gallery-card-caption small text-muted-c"><span class="gallery-image-type">{{ ucfirst($g['type']) }}</span><span>{{ $g['title'] }}</span></div></article></div>
     @empty<div class="col-12"><p class="text-muted-c">Photos will appear here soon.</p></div>@endforelse
   </div>
   <div class="mt-4">{{ $items->links() }}</div>
