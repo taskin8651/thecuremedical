@@ -11,7 +11,7 @@
   :root { --nav-h: 68px; }
   .nav-links, .nav-actions .hide-md { display: none; }
   .menu-toggle { display: inline-flex; }
-  .site-nav .container { gap: .6rem; }
+  .site-nav .container { display: flex; gap: .6rem; }
   .nav-actions { margin-left: auto; }
   .hero-visual { max-width: 420px; margin-top: 2rem; }
   .filter-card, .summary-card { position: static; }
