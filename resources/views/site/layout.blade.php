@@ -13,6 +13,9 @@
   $responsiveVersion = @filemtime(public_path('assets/css/responsive.css')) ?: 1;
   $scriptVersion = @filemtime(public_path('assets/js/site.js')) ?: 1;
   $og = trim($__env->yieldContent('og_image')) ?: setting_url('og_image');
+  $isProductPage = request()->routeIs('site.product');
+  $productOgImage = trim($__env->yieldContent('product_og_image')) ?: ($og ?: asset('assets/images/hero.svg'));
+  $productOgImage = $productOgImage ? preg_replace('/^http:/i', 'https:', $productOgImage) : null;
   $nav = [['site.home', 'Home', 'bi-house'], ['site.about', 'About', 'bi-info-circle'], ['site.products', 'Products', 'bi-grid'], ['site.categories', 'Categories', 'bi-diagram-3'], ['site.services', 'Services', 'bi-clipboard2-pulse'], ['site.gallery', 'Gallery', 'bi-images'], ['site.blog', 'Articles', 'bi-journal-text'], ['site.contact', 'Contact', 'bi-telephone']];
   $tel = \App\Support\Settings::tel();
   $hours = array_values(array_filter(array_map('trim', preg_split('/\R/', (string) setting('opening_hours')))));
@@ -28,9 +31,21 @@
   @if (setting('meta_keywords'))<meta name="keywords" content="{{ setting('meta_keywords') }}">@endif
   @if (trim($__env->yieldContent('noindex')) !== '' || ! filter_var(setting('robots_index', true), FILTER_VALIDATE_BOOLEAN))<meta name="robots" content="noindex,nofollow">@endif
   <link rel="canonical" href="{{ url()->current() }}">
-  <meta property="og:type" content="website"><meta property="og:site_name" content="{{ $biz }}">
-  <meta property="og:title" content="{{ $fullTitle }}"><meta property="og:description" content="{{ $desc }}"><meta property="og:url" content="{{ url()->current() }}">
-  @if ($og)<meta property="og:image" content="{{ $og }}">@endif
+  <meta property="og:type" content="{{ $isProductPage ? 'product' : 'website' }}"><meta property="og:site_name" content="{{ $biz }}">
+  <meta property="og:title" content="{{ $fullTitle }}"><meta property="og:description" content="{{ $desc }}"><meta property="og:url" content="{{ $isProductPage ? route('site.product', request()->route('product')) : url()->current() }}">
+  @if ($isProductPage)
+    @if ($productOgImage)
+      <meta property="og:image" content="{{ $productOgImage }}">
+      <meta property="og:image:secure_url" content="{{ $productOgImage }}">
+      <meta property="og:image:alt" content="{{ $title }}">
+      <meta property="og:image:width" content="1200">
+      <meta property="og:image:height" content="630">
+      <meta name="twitter:card" content="summary_large_image">
+      <meta name="twitter:title" content="{{ $title }}">
+      <meta name="twitter:description" content="{{ $desc }}">
+      <meta name="twitter:image" content="{{ $productOgImage }}">
+    @endif
+  @elseif ($og)<meta property="og:image" content="{{ $og }}">@endif
   <link rel="icon" href="{{ $fav }}">
   <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700&family=Manrope:wght@700;800&display=swap" rel="stylesheet">

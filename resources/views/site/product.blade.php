@@ -13,7 +13,7 @@
 @endphp
 @section('title', $product->name)
 @section('description', \Illuminate\Support\Str::limit(strip_tags((string) ($product->short_description ?: $product->description)), 155))
-@if ($first)@section('og_image', $first->getUrl())@endif
+@section('og_image', $first?->getUrl() ?: setting_url('og_image'))
 @section('content')
 @include('site.partials.hero', ['crumbs' => ['Products' => route('site.products'), $product->name => null], 'heading' => $product->name, 'lead' => null])
 <section class="section-sm"><div class="container"><div class="row g-5">
