@@ -296,16 +296,26 @@ abstract class CrudController extends Controller
             }
 
             $files = $request->file($f['name']);
+            $newMedia = collect();
             if ($files) {
                 foreach (is_array($files) ? $files : [$files] as $file) {
-                    $model->addMedia($file)
+                    $newMedia->push($model->addMedia($file)
                         ->usingName(Str::limit(pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME), 100, ''))
                         ->usingFileName(Str::uuid().'.'.$file->extension())
-                        ->toMediaCollection($collection);
+                        ->toMediaCollection($collection));
                 }
             }
 
-            if (! empty($f['primary']) && $request->filled('primary_media')) {
+            if (! empty($f['primary']) && $request->filled('primary_new')) {
+                $selected = $newMedia->get((int) $request->input('primary_new'));
+                if ($selected) {
+                    $model->unsetRelation('media');
+                    foreach ($model->getMedia($collection) as $m) {
+                        $m->setCustomProperty('primary', (int) $m->id === (int) $selected->id);
+                        $m->save();
+                    }
+                }
+            } elseif (! empty($f['primary']) && $request->filled('primary_media')) {
                 $model->unsetRelation('media');
                 foreach ($model->getMedia($collection) as $m) {
                     $m->setCustomProperty('primary', (int) $m->id === (int) $request->input('primary_media'));

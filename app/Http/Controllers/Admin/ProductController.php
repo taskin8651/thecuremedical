@@ -37,6 +37,28 @@ class ProductController extends CrudController
         return request()->input('save_action') === 'another' ? route($this->route.'.create') : route($this->route.'.index');
     }
 
+    public function duplicateCheck(Request $request)
+    {
+        $this->authorize('create', Product::class);
+        $name = trim((string) $request->query('name'));
+        $sku = trim((string) $request->query('sku'));
+        $barcode = trim((string) $request->query('barcode'));
+        $matches = Product::query()->where(function ($query) use ($name, $sku, $barcode) {
+            if ($name !== '') $query->orWhereRaw('LOWER(name) = ?', [mb_strtolower($name)]);
+            if ($sku !== '') $query->orWhereRaw('LOWER(sku) = ?', [mb_strtolower($sku)]);
+            if ($barcode !== '') $query->orWhere('barcode', $barcode);
+        })->limit(3)->get(['name','sku','barcode'])->map(fn ($p) => $p->name.($p->sku ? ' (SKU '.$p->sku.')' : '').($p->barcode ? ' (barcode '.$p->barcode.')' : ''))->all();
+        return response()->json(['matches' => $matches]);
+    }
+
+    public function quickBrand(Request $request)
+    {
+        $this->authorize('create', Product::class);
+        $data = $request->validate(['name' => ['required','string','max:120']]);
+        $brand = Brand::firstOrCreate(['name' => $data['name']], ['slug' => \Illuminate\Support\Str::slug($data['name'])]);
+        return response()->json(['id' => $brand->id, 'name' => $brand->name]);
+    }
+
     protected function scopeQuery(Builder $query, Request $request): void
     {
         match ($request->input('stock')) {

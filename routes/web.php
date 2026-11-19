@@ -75,6 +75,8 @@ Route::prefix('admin')->name('admin.')->middleware(['auth', 'staff.active', 'sec
     Route::post('/inventory/movement', [InventoryController::class, 'storeMovement'])->name('inventory.movement.store');
     Route::get('/inventory/history', [InventoryController::class, 'history'])->name('inventory.history');
     Route::get('/inventory/batches', [InventoryController::class, 'batches'])->name('inventory.batches');
+    Route::get('products-duplicate-check', [ProductController::class, 'duplicateCheck'])->name('products.duplicate-check');
+    Route::post('products-quick-brand', [ProductController::class, 'quickBrand'])->name('products.quick-brand');
     Route::resource('products', ProductController::class)->except(['show']);
     Route::post('products/bulk', [ProductController::class, 'bulk'])->name('products.bulk');
     Route::get('products/import', [ProductController::class, 'importForm'])->name('products.import');
