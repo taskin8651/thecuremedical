@@ -13,6 +13,7 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Str;
 use Illuminate\Validation\Rule;
 use Illuminate\Validation\ValidationException;
 
@@ -25,6 +26,16 @@ class ProductController extends CrudController
     protected array $with = ['category', 'brand', 'media'];
     protected array $search = ['name', 'sku', 'barcode', 'generic_name', 'brand.name'];
     protected int $perPage = 25;
+
+    protected function formView(): string
+    {
+        return request()->routeIs('admin.products.create') ? 'admin.products.create' : parent::formView();
+    }
+
+    protected function redirectAfterSave(Model $model, bool $isNew): string
+    {
+        return request()->input('save_action') === 'another' ? route($this->route.'.create') : route($this->route.'.index');
+    }
 
     protected function scopeQuery(Builder $query, Request $request): void
     {
@@ -109,7 +120,7 @@ class ProductController extends CrudController
             ['name' => 'slug', 'col' => 4, 'rules' => fn ($m) => ['nullable', 'alpha_dash', 'max:220', Rule::unique('products', 'slug')->ignore($m ? $m->id : null)], 'help' => 'Blank = generated from the name.'],
             ['name' => 'barcode', 'col' => 4, 'rules' => 'nullable|string|max:80'],
             ['name' => 'brand_id', 'label' => 'Brand', 'type' => 'select', 'col' => 4, 'options' => $brands, 'rules' => ['nullable', Rule::exists('brands', 'id')]],
-            ['name' => 'category_id', 'label' => 'Category', 'type' => 'select', 'col' => 6, 'options' => $top, 'rules' => ['nullable', Rule::exists('categories', 'id')]],
+            ['name' => 'category_id', 'label' => 'Category', 'type' => 'select', 'col' => 6, 'options' => $top, 'rules' => ['required', Rule::exists('categories', 'id')->whereNull('parent_id')]],
             ['name' => 'subcategory_id', 'label' => 'Subcategory', 'type' => 'select', 'col' => 6, 'options' => $subs, 'rules' => ['nullable', Rule::exists('categories', 'id')]],
             ['name' => 'short_description', 'type' => 'textarea', 'rows' => 2, 'col' => 12, 'rules' => 'nullable|string|max:400'],
             ['name' => 'description', 'label' => 'Full description', 'type' => 'textarea', 'rows' => 5, 'col' => 12, 'rules' => 'nullable|string|max:10000'],
@@ -130,7 +141,7 @@ class ProductController extends CrudController
 
             ['name' => 'hsn_code', 'label' => 'HSN code', 'group' => 'Pricing & tax', 'col' => 4, 'rules' => 'nullable|string|max:20'],
             ['name' => 'gst_rate', 'label' => 'GST rate (%)', 'type' => 'money', 'col' => 4, 'rules' => 'nullable|numeric|min:0|max:100'],
-            ['name' => 'mrp', 'label' => 'MRP', 'type' => 'money', 'col' => 4, 'rules' => 'nullable|numeric|min:0|max:10000000'],
+            ['name' => 'mrp', 'label' => 'MRP', 'type' => 'money', 'col' => 4, 'rules' => 'required|numeric|min:0.01|max:10000000'],
             ['name' => 'sale_price', 'type' => 'money', 'col' => 4, 'rules' => 'nullable|numeric|min:0|max:10000000'],
             ['name' => 'ptr', 'label' => 'PTR', 'type' => 'money', 'col' => 4, 'rules' => 'nullable|numeric|min:0|max:10000000'],
             ['name' => 'pts', 'label' => 'PTS', 'type' => 'money', 'col' => 4, 'rules' => 'nullable|numeric|min:0|max:10000000'],
@@ -164,6 +175,12 @@ class ProductController extends CrudController
 
     protected function beforeSave(array &$data, Model $model, Request $request): void
     {
+        if (blank($data['sku'] ?? null)) {
+            do { $sku = 'TCM-'.Str::upper(Str::random(8)); }
+            while (Product::where('sku', $sku)->exists());
+            $data['sku'] = $sku;
+        }
+        if ($request->input('save_action') === 'draft') $data['is_active'] = false;
         $existingImages = $model->exists ? $model->getMedia('images')->pluck('id') : collect();
         $removedImages = collect($request->input('remove_media.images', []))
             ->map(fn ($id) => (int) $id)
