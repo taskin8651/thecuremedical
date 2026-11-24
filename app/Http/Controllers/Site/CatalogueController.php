@@ -39,7 +39,7 @@ class CatalogueController extends Controller
         };
 
         return view('site.products', [
-            'products' => $query->paginate(12)->withQueryString(),
+            'products' => $query->paginate(100)->withQueryString(),
             'categories' => Category::query()->active()->topLevel()->withCount(['products' => fn ($p) => $p->where('is_active', true)])->orderBy('sort_order')->get(),
             'current' => $category,
             'q' => $q,

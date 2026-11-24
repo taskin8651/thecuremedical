@@ -15,6 +15,11 @@ class ProductBatch extends Model
         return $this->belongsTo(Product::class)->withTrashed();
     }
 
+    public function subcategory()
+    {
+        return $this->product?->subcategory;
+    }
+
     public function supplier()
     {
         return $this->belongsTo(Supplier::class);

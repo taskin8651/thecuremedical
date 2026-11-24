@@ -28,7 +28,7 @@ class HomeController extends Controller
                 ->withCount(['products' => fn ($q) => $q->active()])
                 ->orderBy('name')->limit(10)->get(),
             'categories' => Category::query()->active()->topLevel()->with('media')->orderBy('sort_order')->limit(8)->get(),
-            'products' => $listed()->orderByDesc('is_featured')->orderByDesc('views')->latest('id')->limit(8)->get(),
+            'products' => $listed()->orderByDesc('is_featured')->orderByDesc('views')->latest('id')->limit(100)->get(),
             'heroProducts' => $listed()->where('is_featured', true)->latest('id')->limit(6)->get(),
             'testimonials' => Testimonial::query()->active()->with('media')->orderBy('sort_order')->limit(4)->get(),
         ]);
