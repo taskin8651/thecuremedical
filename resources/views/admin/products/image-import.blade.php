@@ -32,7 +32,7 @@
     <div class="card-c"><div class="card-body-c">
         <p>Use one JPG, PNG or WebP per product. Name each photo with the exact SKU, including letter case, such as <code>SMASK-003.webp</code>.</p>
         <p class="small text-muted">Up to 4 MB and 24 megapixels per image. ZIP limit is 128 MB and 1,000 entries. Split larger sets into multiple ZIPs.</p>
-        <form method="POST" action="{{ route('admin.products.image-import.store') }}" enctype="multipart/form-data" data-once>
+        <form method="POST" action="{{ route('admin.products.image-import.store', [], false) }}" enctype="multipart/form-data" data-once>
             @csrf
             <label class="form-label" for="archive">ZIP file</label>
             <input type="file" id="archive" name="archive" accept=".zip,application/zip" class="form-control @error('archive') is-invalid @enderror" required>
@@ -49,7 +49,7 @@
         @elseif ($phase === 'preview')
             <h2 class="section-title">Preview</h2>
             <p>{{ $ready }} ready to upload · {{ $summary['skipped'] }} skipped · {{ $summary['failed'] }} failed</p>
-            <form method="POST" action="{{ route('admin.products.image-import.advance', $upload) }}" data-once>
+            <form method="POST" action="{{ route('admin.products.image-import.advance', $upload, false) }}" data-once>
                 @csrf
                 <input type="hidden" name="action" value="confirm">
                 <button class="btn-c" type="submit">{{ $ready ? 'Confirm upload' : 'Finish review' }}</button>
@@ -57,8 +57,9 @@
         @else
             <h2 class="section-title">{{ $phase === 'checking' ? 'Validating ZIP images' : 'Uploading images' }}</h2>
             <p aria-live="polite" id="image-import-progress">{{ $state['cursor'] }} of {{ count($state['rows']) }} files processed</p>
+            <p id="image-import-error" class="text-danger" role="alert" hidden></p>
             <p class="small text-muted">Reopen this page within 24 hours to resume.</p>
-            <form id="image-import-batch" method="POST" action="{{ route('admin.products.image-import.advance', $upload) }}" data-phase="{{ $phase }}">
+            <form id="image-import-batch" method="POST" action="{{ route('admin.products.image-import.advance', $upload, false) }}" data-phase="{{ $phase }}">
                 @csrf
                 <input type="hidden" name="action" value="{{ $phase === 'checking' ? 'check' : 'import' }}">
                 <button class="btn-c-outline" type="submit">Continue</button>
@@ -95,21 +96,38 @@
             (() => {
                 const form = document.getElementById('image-import-batch');
                 const progress = document.getElementById('image-import-progress');
+                const errorMessage = document.getElementById('image-import-error');
                 const button = form.querySelector('button');
+                // Read the attribute because the named action field shadows form.action.
+                const endpoint = form.getAttribute('action');
 
                 async function processBatches(event) {
                     event?.preventDefault();
                     button.disabled = true;
+                    errorMessage.hidden = true;
                     try {
                         const data = new FormData(form);
                         while (true) {
-                            const response = await fetch(form.action, {
+                            const response = await fetch(endpoint, {
                                 method: 'POST',
                                 headers: { Accept: 'application/json' },
                                 body: data,
                             });
-                            if (!response.ok || response.redirected) {
-                                throw new Error('Batch interrupted');
+                            if (response.redirected || response.status === 401 || response.status === 419) {
+                                throw new Error('Your session expired. Reload this page and sign in to resume.');
+                            }
+                            if (response.status === 403) {
+                                throw new Error('Your account no longer has permission to upload product images.');
+                            }
+                            if (response.status === 404) {
+                                throw new Error('This upload is no longer available. Start another upload.');
+                            }
+                            if (response.status === 422) {
+                                const result = await response.json();
+                                throw new Error(result.errors?.archive?.[0] || result.message);
+                            }
+                            if (!response.ok) {
+                                throw new Error('The batch request failed (HTTP ' + response.status + '). Select Continue to retry.');
                             }
                             const result = await response.json();
                             if (result.phase !== form.dataset.phase) {
@@ -118,8 +136,13 @@
                             }
                             progress.textContent = result.processed + ' of ' + result.total + ' files processed';
                         }
-                    } catch {
-                        progress.textContent = 'Processing paused. Select Continue to retry, or reload the page if your session expired.';
+                    } catch (error) {
+                        errorMessage.textContent = error instanceof TypeError
+                            ? 'Could not reach the server. Select Continue to retry.'
+                            : (error instanceof SyntaxError
+                                ? 'The server returned an unexpected response. Reload this page to resume.'
+                                : error.message);
+                        errorMessage.hidden = false;
                         button.disabled = false;
                     }
                 }
