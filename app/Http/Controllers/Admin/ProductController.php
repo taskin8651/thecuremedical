@@ -123,6 +123,7 @@ class ProductController extends CrudController
 
         return [
             ['label' => 'Import CSV', 'icon' => 'bi-upload', 'url' => route('admin.products.import'), 'can' => $u->can('products.import')],
+            ['label' => 'Bulk Image Upload', 'icon' => 'bi-images', 'url' => route('admin.products.image-import.create'), 'can' => $u->can(ProductImageImportController::PERMISSIONS)],
             ['label' => 'Export CSV', 'icon' => 'bi-download', 'url' => route('admin.products.export', request()->query()), 'can' => $u->can('products.export')],
         ];
     }
@@ -197,6 +198,10 @@ class ProductController extends CrudController
 
     protected function beforeSave(array &$data, Model $model, Request $request): void
     {
+        if ($model->exists) {
+            // Serialize product image edits with the bulk importer, including image-only changes.
+            Product::query()->lockForUpdate()->findOrFail($model->getKey(), ['id']);
+        }
         if (blank($data['sku'] ?? null)) {
             do { $sku = 'TCM-'.Str::upper(Str::random(8)); }
             while (Product::where('sku', $sku)->exists());

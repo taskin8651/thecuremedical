@@ -1,6 +1,6 @@
 <?php
 
-use App\Http\Controllers\Admin\{AboutController, ActivityLogController, BlogController, BrandController, CartController, CategoryController, ContentBlockController, CouponController, CustomerController, DashboardController, EnquiryController, FaqController, GalleryController, InventoryController, NotificationController, OrderController, PageController as AdminPageController, PaymentController, PrescriptionController, ProductController, ProfileController, PurchaseController, ReportController, RoleController, ServiceController, SettingsController, ShippingZoneController, SupplierController, TestimonialController, UserController};
+use App\Http\Controllers\Admin\{AboutController, ActivityLogController, BlogController, BrandController, CartController, CategoryController, ContentBlockController, CouponController, CustomerController, DashboardController, EnquiryController, FaqController, GalleryController, InventoryController, NotificationController, OrderController, PageController as AdminPageController, PaymentController, PrescriptionController, ProductController, ProductImageImportController, ProfileController, PurchaseController, ReportController, RoleController, ServiceController, SettingsController, ShippingZoneController, SupplierController, TestimonialController, UserController};
 use App\Http\Controllers\Auth\{LoginController, PasswordController};
 use App\Http\Controllers\Site\{BlogController as SiteBlogController, CatalogueController, DemoController, EnquiryController as SiteEnquiryController, HomeController, PageController as SitePageController, SeoController};
 use App\Http\Controllers\Site\{CartController as SiteCartController, CheckoutController, CustomerAccountController};
@@ -82,6 +82,14 @@ Route::prefix('admin')->name('admin.')->middleware(['auth', 'staff.active', 'sec
     Route::get('products/import', [ProductController::class, 'importForm'])->name('products.import');
     Route::post('products/import', [ProductController::class, 'import'])->name('products.import.store');
     Route::get('products/import/template', [ProductController::class, 'importTemplate'])->name('products.import.template');
+    Route::prefix('products/bulk-images')->name('products.image-import.')
+        ->middleware(array_map(fn ($permission) => 'can:'.$permission, ProductImageImportController::PERMISSIONS))
+        ->controller(ProductImageImportController::class)->group(function () {
+            Route::get('/', 'create')->name('create');
+            Route::post('/', 'store')->name('store');
+            Route::get('/{upload}', 'show')->whereUuid('upload')->name('show');
+            Route::post('/{upload}', 'advance')->whereUuid('upload')->name('advance');
+        });
     Route::get('products-export', [ProductController::class, 'export'])->name('products.export');
     Route::post('products/{product}/duplicate', [ProductController::class, 'duplicate'])->name('products.duplicate');
     Route::post('products/{product}/verify', [ProductController::class, 'verify'])->name('products.verify');
