@@ -122,6 +122,7 @@ class ProductController extends CrudController
         $u = auth()->user();
 
         return [
+            ['label' => 'Verify All Products', 'icon' => 'bi-patch-check', 'url' => route('admin.products.verify-all'), 'can' => $u->can('products.verify')],
             ['label' => 'Import CSV', 'icon' => 'bi-upload', 'url' => route('admin.products.import'), 'can' => $u->can('products.import')],
             ['label' => 'Bulk Image Upload', 'icon' => 'bi-images', 'url' => route('admin.products.image-import.create'), 'can' => $u->can(ProductImageImportController::PERMISSIONS)],
             ['label' => 'Export CSV', 'icon' => 'bi-download', 'url' => route('admin.products.export', request()->query()), 'can' => $u->can('products.export')],
@@ -281,7 +282,7 @@ class ProductController extends CrudController
                 return false;
             }
 
-            return $record->update(['is_verified' => true, 'verified_by' => auth()->id(), 'verified_at' => now()]);
+            return $record->update($this->verificationAttributes());
         }
 
         return parent::applyBulk($action, $record);
@@ -322,10 +323,41 @@ class ProductController extends CrudController
     {
         abort_unless(auth()->user()->can('products.verify'), 403);
         $product = $this->findRecord($record);
-        $product->update(['is_verified' => true, 'verified_by' => auth()->id(), 'verified_at' => now()]);
+        $product->update($this->verificationAttributes());
         ActivityLog::record('verified', $product);
 
         return back()->with('success', 'Product marked as verified.');
+    }
+
+    public function verifyAllForm()
+    {
+        $this->authorize('viewAny', Product::class);
+
+        return view('admin.products.verify-all', [
+            'count' => Product::query()->where('is_verified', false)->count(),
+        ]);
+    }
+
+    public function verifyAll(Request $request)
+    {
+        $this->authorize('viewAny', Product::class);
+        $request->validate(['confirmed' => ['accepted']], [
+            'confirmed.accepted' => 'Confirm that you reviewed the medical information before verifying products.',
+        ]);
+
+        $count = Product::query()->where('is_verified', false)->update($this->verificationAttributes());
+        if ($count > 0) {
+            ActivityLog::record('bulk', null, "Verified {$count} products across the catalogue", ['verified_count' => $count]);
+        }
+
+        return redirect()->route('admin.products.index')->with('success', $count > 0
+            ? number_format($count).' '.Str::plural('product', $count).' marked as verified.'
+            : 'All products are already verified.');
+    }
+
+    private function verificationAttributes(): array
+    {
+        return ['is_verified' => true, 'verified_by' => auth()->id(), 'verified_at' => now()];
     }
 
     public function export(Request $request)

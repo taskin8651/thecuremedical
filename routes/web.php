@@ -93,6 +93,8 @@ Route::prefix('admin')->name('admin.')->middleware(['auth', 'staff.active', 'sec
     Route::get('products-export', [ProductController::class, 'export'])->name('products.export');
     Route::post('products/{product}/duplicate', [ProductController::class, 'duplicate'])->name('products.duplicate');
     Route::post('products/{product}/verify', [ProductController::class, 'verify'])->name('products.verify');
+    Route::get('products/verify-all', [ProductController::class, 'verifyAllForm'])->middleware('can:products.verify')->name('products.verify-all');
+    Route::post('products/verify-all', [ProductController::class, 'verifyAll'])->middleware('can:products.verify')->name('products.verify-all.store');
     foreach ([['categories',CategoryController::class],['brands',BrandController::class],['suppliers',SupplierController::class],['enquiries',EnquiryController::class],['customers',CustomerController::class],['services',ServiceController::class],['gallery',GalleryController::class],['blogs',BlogController::class],['testimonials',TestimonialController::class],['pages',AdminPageController::class],['faqs',FaqController::class],['coupons',CouponController::class],['shipping',ShippingZoneController::class],['users',UserController::class]] as [$uri,$controller]) Route::resource($uri,$controller)->except(['show']);
     Route::resource('content/blocks', ContentBlockController::class)->except(['show'])->names('content.blocks');
     Route::get('content-blocks', [ContentBlockController::class, 'index'])->name('content-blocks.index');
